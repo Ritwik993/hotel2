@@ -9,6 +9,7 @@ const HotelBookingForm = () => {
   const [checkInDate, setCheckInDate] = useState("");
   const [checkOutDate, setCheckOutDate] = useState("");
   const [numberOfGuests, setNumberOfGuests] = useState("");
+
   const addUser = async (
     name,
     email,
@@ -87,14 +88,16 @@ const HotelBookingForm = () => {
 
         <br />
 
-        <Link to='/getdata'><button
-          type="submit"
-          onClick={() =>
-            addUser(name, email, checkInDate, checkOutDate, numberOfGuests)
-          }
-        >
-          Submit
-        </button></Link>
+        <Link to="/getdata">
+          <button
+            type="submit"
+            onClick={() =>
+              addUser(name, email, checkInDate, checkOutDate, numberOfGuests)
+            }
+          >
+            Submit
+          </button>
+        </Link>
       </form>
     </div>
   );

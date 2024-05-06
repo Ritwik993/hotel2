@@ -1,32 +1,38 @@
 import React, { useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "./firebase";
-import { doc, updateDoc ,deleteDoc} from "firebase/firestore";
-import './GetData.css'
+import { doc, updateDoc, deleteDoc } from "firebase/firestore";
+import "./GetData.css";
 
 const GetData = () => {
-  const [users,setUsers]=useState();
-  const[updateNumberOfGuests,setUpdateNumberOfGuests]=useState(0);
+  const [users, setUsers] = useState();
+  const [updateNumberOfGuests, setUpdateNumberOfGuests] = useState(0);
 
   const handleGetUser = async () => {
-    const querySnapshot = await getDocs(collection(db, "customers"));  
-    setUsers(querySnapshot.docs.map((doc)=>({...doc.data(),id:doc.id})));
+    const querySnapshot = await getDocs(collection(db, "customers"));
+    setUsers(querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
   };
 
-
-
-
   const updateUser = async (id, updateNumberOfGuests) => {
-    const userDoc = doc(db, "customers", id);
-    const newField = { numberOfGuests:updateNumberOfGuests };
-    await updateDoc(userDoc, newField);
+    try {
+      const userDocRef = doc(db, "customers", id);
+      await updateDoc(userDocRef, { numberOfGuests: updateNumberOfGuests });
+      setUpdateNumberOfGuests(0); // Reset input field after update
+      handleGetUser(); // Refresh user list
+    } catch (error) {
+      console.error("Error updating user:", error);
+    }
   };
 
   const deleteUser = async (id) => {
-    const userDoc = doc(db, "customers", id);
-    await deleteDoc(userDoc);
+    try {
+      const userDoc = doc(db, "customers", id);
+      await deleteDoc(userDoc);
+      handleGetUser();
+    } catch (error) {
+      console.log(error);
+    }
   };
-
 
   return (
     <div className="getData">
@@ -54,13 +60,18 @@ const GetData = () => {
                   />
                   <button
                     className="user-button"
-                    onClick={() => updateUser(user.id, Number(updateNumberOfGuests))}
+                    onClick={() =>
+                      updateUser(user.id, Number(updateNumberOfGuests))
+                    }
                   >
                     Update Guest Number
                   </button>
                 </div>
 
-                <button className="user-delete" onClick={() => deleteUser(user.id)}>
+                <button
+                  className="user-delete"
+                  onClick={() => deleteUser(user.id)}
+                >
                   Delete User
                 </button>
               </div>
